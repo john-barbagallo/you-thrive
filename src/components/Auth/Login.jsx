@@ -12,11 +12,15 @@ const Login = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let unsubscribe;
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000); // Force stop loading after 3 seconds
+
     // Listen for auth state changes
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    unsubscribe = onAuthStateChanged(auth, (user) => {
       console.log('Auth state changed:', user?.email);
       if (user) {
-        // User is signed in, redirect to dashboard
         navigate('/dashboard');
       }
     });
@@ -26,7 +30,6 @@ const Login = () => {
       .then((result) => {
         if (result && result.user) {
           console.log('Redirect successful:', result.user.email);
-          // Force navigation even if auth state hasn't updated
           navigate('/dashboard');
         }
         setLoading(false);
@@ -42,7 +45,10 @@ const Login = () => {
       });
 
     // Cleanup
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(timer);
+      if (unsubscribe) unsubscribe();
+    };
   }, [navigate]);
 
   const handleSignIn = async () => {
@@ -52,8 +58,6 @@ const Login = () => {
       setError(null);
       
       await signInWithGoogle();
-      // For mobile redirect, the page will reload
-      // Desktop popup will continue here
     } catch (error) {
       console.error('Sign in error:', error);
       setError(error.message);

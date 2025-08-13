@@ -3,6 +3,12 @@ import { signInWithPopup, signInWithRedirect, signOut } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from './config';
 
+// Configure Google provider
+googleProvider.setCustomParameters({ 
+  prompt: 'select_account',
+  auth_type: 'rerequest' 
+});
+
 // Detect if mobile device
 const isMobile = () => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -21,10 +27,8 @@ export const signInWithGoogle = async () => {
     if (isMobile() || isSafari()) {
       console.log('Using redirect method for mobile/Safari');
       await signInWithRedirect(auth, googleProvider);
-      // Page will redirect, no result returned here
       return;
     } else {
-      // Use popup for desktop Chrome/Firefox/Edge
       console.log('Using popup method for desktop');
       result = await signInWithPopup(auth, googleProvider);
     }
@@ -53,7 +57,6 @@ export const signInWithGoogle = async () => {
   } catch (error) {
     console.error('Error signing in:', error);
     
-    // Fallback to redirect if popup fails
     if (error.code === 'auth/popup-blocked') {
       console.log('Popup blocked, using redirect');
       await signInWithRedirect(auth, googleProvider);
@@ -64,4 +67,4 @@ export const signInWithGoogle = async () => {
   }
 };
 
-export const logout = () => signOut(auth);
+export const logout = () => signOut(auth);v
