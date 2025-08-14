@@ -1,10 +1,8 @@
-// src/components/Dashboard/ActionTracker.jsx
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../firebase/config';
 
-// Save daily actions function
 const saveDailyActions = async (userId, actions) => {
   const date = new Date().toISOString().split('T')[0];
   const actionsRef = doc(db, 'users', userId, 'actions', date);
@@ -44,6 +42,7 @@ const ActionTracker = () => {
       }
     } catch (error) {
       console.error('Error loading actions:', error);
+      alert('❌ Could not load actions. Please refresh.');
     }
   };
 
@@ -60,6 +59,7 @@ const ActionTracker = () => {
       await saveDailyActions(currentUser.uid, updatedActions);
     } catch (error) {
       console.error('Error saving actions:', error);
+      alert('❌ Failed to save. Please try again.');
     }
     setLoading(false);
   };
@@ -92,6 +92,8 @@ const ActionTracker = () => {
           </label>
         ))}
       </div>
+      
+      {loading && <p className="text-sm text-gray-500 mt-2">Saving...</p>}
       
       {completedCount === 5 && (
         <p className="text-green-600 font-semibold mt-3 text-center">

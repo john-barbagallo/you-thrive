@@ -1,4 +1,3 @@
-// src/components/Dashboard/DailyPrompt.jsx
 import React, { useState, useEffect } from 'react';
 import { saveDailyEntry, getTodayEntries } from '../../firebase/db';
 import { useAuth } from '../../contexts/AuthContext';
@@ -39,8 +38,10 @@ const DailyPrompt = () => {
         text
       });
       await loadTodayEntries();
+      alert('✅ Saved!');
     } catch (error) {
       console.error('Error saving entry:', error);
+      alert('❌ Failed to save. Please try again.');
     }
     setLoading(false);
   };
@@ -69,7 +70,7 @@ const DailyPrompt = () => {
             disabled={loading || !morningEntry.trim()}
             className="mt-2 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 disabled:opacity-50"
           >
-            Save Morning Intention
+            {loading ? 'Saving...' : 'Save Morning Intention'}
           </button>
         )}
       </div>
@@ -94,7 +95,7 @@ const DailyPrompt = () => {
               disabled={loading || !eveningEntry.trim()}
               className="mt-2 bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 disabled:opacity-50"
             >
-              Save Evening Win
+              {loading ? 'Saving...' : 'Save Evening Win'}
             </button>
           )}
         </div>

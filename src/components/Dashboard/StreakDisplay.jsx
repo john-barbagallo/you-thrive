@@ -1,4 +1,3 @@
-// src/components/Dashboard/StreakDisplay.jsx
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
@@ -16,7 +15,6 @@ const StreakDisplay = () => {
 
   const loadStreak = async () => {
     try {
-      // Get current streak
       const userRef = doc(db, 'users', currentUser.uid);
       const userSnap = await getDoc(userRef);
       
@@ -25,7 +23,6 @@ const StreakDisplay = () => {
         const currentStreak = userData.streak || 0;
         setStreak(currentStreak);
         
-        // Update streak for today
         const today = new Date().toISOString().split('T')[0];
         let newStreak = 1;
         
@@ -42,7 +39,6 @@ const StreakDisplay = () => {
           }
         }
         
-        // Update in database
         await setDoc(userRef, {
           ...userData,
           streak: newStreak,
@@ -51,7 +47,6 @@ const StreakDisplay = () => {
         
         setStreak(newStreak);
       } else {
-        // Create initial user data
         await setDoc(doc(db, 'users', currentUser.uid), {
           uid: currentUser.uid,
           email: currentUser.email,
@@ -63,6 +58,7 @@ const StreakDisplay = () => {
       }
     } catch (error) {
       console.error('Error loading streak:', error);
+      alert('❌ Could not load streak. Please refresh.');
     }
   };
 
