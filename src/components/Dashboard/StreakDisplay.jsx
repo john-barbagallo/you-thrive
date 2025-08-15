@@ -1,3 +1,4 @@
+// src/components/Dashboard/StreakDisplay.jsx
 import React, { useState, useEffect } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
@@ -58,15 +59,42 @@ const StreakDisplay = () => {
       }
     } catch (error) {
       console.error('Error loading streak:', error);
-      alert('❌ Could not load streak. Please refresh.');
     }
   };
 
+  const getStreakMessage = () => {
+    if (streak === 0) return "START TODAY";
+    if (streak === 1) return "DAY ONE WARRIOR";
+    if (streak < 7) return "BUILDING MOMENTUM";
+    if (streak < 30) return "UNSTOPPABLE FORCE";
+    if (streak < 100) return "LEGENDARY STATUS";
+    return "ABSOLUTE CHAMPION";
+  };
+
   return (
-    <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white p-4 rounded-lg text-center">
-      <div className="text-4xl mb-2">🔥</div>
-      <div className="text-3xl font-bold">{streak}</div>
-      <div className="text-sm">Day Streak</div>
+    <div className="relative bg-gradient-to-br from-yellow-500 via-yellow-600 to-orange-600 rounded-2xl p-6 shadow-2xl overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,.1) 10px, rgba(0,0,0,.1) 20px)`
+        }}></div>
+      </div>
+      
+      {/* Content */}
+      <div className="relative">
+        <div className="text-slate-900 font-black text-sm mb-2 opacity-90">CURRENT STREAK</div>
+        <div className="flex items-baseline space-x-2">
+          <div className="text-6xl sm:text-7xl font-black text-slate-900">{streak}</div>
+          <div className="text-2xl sm:text-3xl">🔥</div>
+        </div>
+        <div className="text-slate-900 font-bold text-sm mt-2">{getStreakMessage()}</div>
+        
+        {streak > 0 && streak % 7 === 0 && (
+          <div className="mt-3 bg-slate-900 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold inline-block">
+            🏆 WEEK MILESTONE!
+          </div>
+        )}
+      </div>
     </div>
   );
 };
